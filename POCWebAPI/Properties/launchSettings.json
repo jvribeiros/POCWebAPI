@@ -9,7 +9,7 @@
     }
   },
   "profiles": {
-    "poc_back": {
+    "POCWebAPI": {
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": true,

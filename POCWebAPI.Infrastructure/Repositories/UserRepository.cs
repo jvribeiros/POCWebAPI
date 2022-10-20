@@ -1,55 +1,47 @@
 ﻿using Dapper;
 using Microsoft.Extensions.Configuration;
-using POCWebAPI.Domain.Interfaces;
 using POCWebAPI.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using POCWebAPI.Domain.Interfaces.Repositories;
 
 namespace POCWebAPI.Infrastructure.Repositories
 {
-    public class UserRepository : SqlServerRepository, IUserRepository
+    public class UserRepository : DbContext, IUserRepository
     {
-
-        public UserRepository(IConfiguration config) : base(config)
-        {
-        }
-
-        #region 'Get User'
-
-        public User Create(User newUser)
+        public async Task<User?> Authenticate(string username, string password)
         {
             using (var db = new POC_DATABASEContext())
             {
-                var user = db.Users.Add(newUser);
+                User? user = await db.Users
+                    .Where(user => user.Email == username && user.Password == password)
+                    .FirstOrDefaultAsync();
+
+                if (user != null) return user;
+                return null;
+            }
+        }
+
+        public async Task<User> Create(User newUser)
+        {
+            using (var db = new POC_DATABASEContext())
+            {
+                var user = await db.Users.AddAsync(newUser);
                 db.SaveChanges();
 
                 return user.Entity;
             }
         }
 
-        public User Select(int userId)
+        public async Task<User> Select(int userId)
         {
             using (var db = new POC_DATABASEContext())
             {
-                User user = db.Users.SingleOrDefault(user => user.Id == userId);
+                User? user = await db.Users
+                    .SingleOrDefaultAsync(user => user.Id == userId);
 
                 return user;
             }
         }
-
-        public User Delete(int userId)
-        {
-            using (var db = new POC_DATABASEContext())
-            {
-                User user = db.Users
-                    .SingleOrDefault(user => user.Id == userId);
-
-                db.Remove(user);
-                db.SaveChanges();
-
-                return new User();
-            }
-        }
-
-        #endregion
-
     }
 }

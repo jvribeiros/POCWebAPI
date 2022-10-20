@@ -1,11 +1,12 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
-using POCWebAPI.Domain.Interfaces;
 using POCWebAPI.Domain.Entities;
+using POCWebAPI.Domain.Interfaces.Services;
+using POCWebAPI.Domain.Interfaces.Repositories;
 
 namespace POCWebAPI.Service.Services
 {
-    
+
     public class UserService : IUserService
     {
         private readonly IUserRepository userRepository;
@@ -15,19 +16,21 @@ namespace POCWebAPI.Service.Services
             userRepository = UserRepository;
         }
 
-        public User Get(int userId)
+        public async Task<User> Authenticate(string username, string password)
         {
-            return userRepository.Select(userId);
+            User? registeredUser = await userRepository.Authenticate(username, password);
+            if (registeredUser == null) throw new Exception("User not found!");
+            return registeredUser;
         }
 
-        public User Create(User newUser)
+        public async Task<User> Get(int userId)
         {
-            return userRepository.Create(newUser);
+            return await userRepository.Select(userId);
         }
 
-        public User Delete(int userId)
+        public async Task<User> Create(User newUser)
         {
-            return userRepository.Delete(userId);
+            return await userRepository.Create(newUser);
         }
     }
 }

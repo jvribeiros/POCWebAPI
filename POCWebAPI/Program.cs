@@ -1,12 +1,9 @@
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
-using POCWebAPI.Domain.Interfaces;
+
 using POCWebAPI.Service.HubConfig;
 using POCWebAPI.Service.Services;
-using POCWebAPI.Service.TimeFeatures;
 using POCWebAPI.Infrastructure.Repositories;
-using System.Text;
-using Swashbuckle.AspNetCore.Filters;
+using POCWebAPI.Domain.Interfaces.Services;
+using POCWebAPI.Domain.Interfaces.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,43 +11,22 @@ builder.Services.AddSignalR();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(options =>
-{
-    options.AddSecurityDefinition("oauth2", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
-    {
-        Description = "Standard Authorization header using the Bearer scheme (\"bearer {token]\")",
-        In = Microsoft.OpenApi.Models.ParameterLocation.Header,
-        Name = "Authorization",
-        Type = Microsoft.OpenApi.Models.SecuritySchemeType.ApiKey
-    });
+builder.Services.AddSwaggerGen();
 
-    options.OperationFilter<SecurityRequirementsOperationFilter>();
-});
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
-{
-    options.TokenValidationParameters = new TokenValidationParameters
-    {
-        ValidateIssuerSigningKey = true,
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8
-            .GetBytes(builder.Configuration.GetSection("AppSettings:Token").Value)),
-        ValidateIssuer = false,
-        ValidateAudience = false
-    };
-});
-
+// Services
 builder.Services.AddScoped<IUserService, UserService>();
+
+// Repositories
 builder.Services.AddScoped<IUserRepository, UserRepository>();
-builder.Services.AddSingleton<TimeManager>();
 
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("CorsPolicy", builder => builder
-    .WithOrigins("http://localhost:4200")
-    .AllowAnyMethod()
-    .AllowAnyHeader().
-    AllowCredentials());
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .SetIsOriginAllowed((host) => true)
+            .AllowCredentials());
 });
-
 
 var app = builder.Build();
 
@@ -62,7 +38,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+// app.UseHttpsRedirection();
 
 app.UseCors("CorsPolicy");
 
@@ -71,7 +47,8 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-app.MapHub<ChartHub>("/chart");
+app.UseCors("CorsPolicy");
 
+app.MapHub<NotificationHub>("/notification");
 
 app.Run();

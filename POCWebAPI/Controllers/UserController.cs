@@ -1,15 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using POCWebAPI.Domain.Entities;
-using POCWebAPI.Domain.Interfaces;
+using POCWebAPI.Domain.Interfaces.Services;
+using POCWebAPI.Domain.Models;
 
 namespace POCWebAPI.Controllers
 {
-    public class HttpResponseModel
-    {
-        public int Code { get; set; }
-        public string Message { get; set; }
-    }
-
     [Route("api/[controller]")]
     [ApiController]
     public class UserController : ControllerBase
@@ -21,12 +16,12 @@ namespace POCWebAPI.Controllers
             userService = UserService;
         }
 
-        [HttpGet("GetUser")]
-        public IActionResult GetUser([FromQuery] int userId)
+        [HttpGet("Authenticate")]
+        public async Task<IActionResult> Authenticate(string username, string password)
         {
             try
             {
-                User user = userService.Get(userId);
+                User user = await userService.Authenticate(username, password);
                 return Ok(user);
             }
             catch (Exception e)
@@ -38,31 +33,30 @@ namespace POCWebAPI.Controllers
             }
         }
 
-        [HttpGet("RegisterUser")]
-        public IActionResult RegisterUser([FromQuery] User newUser)
+        [HttpGet("GetUser/{userId}")]
+        public async Task<IActionResult> GetUser(int userId)
         {
             try
             {
-                User user = userService.Create(newUser);
+                User user = await userService.Get(userId);
                 return Ok(user);
             }
             catch (Exception e)
             {
                 return BadRequest(new HttpResponseModel()
                 {
-                    Code = 0,
                     Message = e.Message
                 });
             }
         }
 
-        [HttpDelete("DeleteUser")]
-        public IActionResult DeleteUser([FromQuery] int userId)
+        [HttpPost("RegisterUser")]
+        public async Task<IActionResult> RegisterUser(User newUser)
         {
             try
             {
-                userService.Delete(userId);
-                return Ok(new User());
+                User user = await userService.Create(newUser);
+                return Ok(user);
             }
             catch (Exception e)
             {

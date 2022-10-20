@@ -11,6 +11,14 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "POCWebAPI.Infrastructure", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "POCWebAPI.Service", "POCWebAPI.Service\POCWebAPI.Service.csproj", "{71861339-62E2-4AAA-AA94-0BC3CD39BC0D}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "1. Application", "1. Application", "{A0963E29-9AE2-4E6C-9C5A-B9CC608E3A67}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "2. Service", "2. Service", "{AFAA2B50-72CD-48EE-AE40-EB971339610A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "3. Domain", "3. Domain", "{CE3A8B6C-8418-481B-8215-88312AFE6EC9}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "4. Infra", "4. Infra", "{55746310-6365-4783-9CAF-868968F0A49E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -36,6 +44,12 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{8A227458-238B-4BBA-ADC6-3CF5982CCDAE} = {A0963E29-9AE2-4E6C-9C5A-B9CC608E3A67}
+		{889382F4-9403-4A06-BFE7-27F9E6784038} = {CE3A8B6C-8418-481B-8215-88312AFE6EC9}
+		{0718DBD4-B027-4908-916E-EF6418F7B584} = {55746310-6365-4783-9CAF-868968F0A49E}
+		{71861339-62E2-4AAA-AA94-0BC3CD39BC0D} = {AFAA2B50-72CD-48EE-AE40-EB971339610A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9014B59E-93AC-407E-AB9F-4FCDC956B6F9}

@@ -7,10 +7,10 @@ using System.Threading.Tasks;
 
 namespace POCWebAPI.Service.HubConfig
 {
-    public class ChartHub : Hub
+    public class NotificationHub : Hub
     {
-        public async Task BroadcastChartData(List<ChartModel> data) => 
-            await Clients.All.SendAsync("broadcastchartdata", data);
+        public async Task BroadcastNotifications(List<NotificationModel> notification) => 
+            await Clients.All.SendAsync("broadcastnotification", notification);
     }
 
 }
